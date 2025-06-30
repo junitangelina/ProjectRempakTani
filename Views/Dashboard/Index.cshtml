@@ -1,0 +1,141 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4 fw-bold text-dark">Dashboard</h2>
+
+    <!-- Kartu Grafik Produk Favorit -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white fw-semibold">
+            <i class="fas fa-chart-line me-2 text-warning"></i> Produk Favorit
+        </div>
+        <div class="card-body">
+            <canvas id="produkChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Kartu Grafik Pendapatan -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white fw-semibold">
+            <i class="fas fa-coins me-2 text-warning"></i> Pendapatan
+        </div>
+        <div class="card-body">
+            <canvas id="pendapatanChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Tabel Riwayat Pemesanan -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-white fw-semibold">
+            <i class="fas fa-clipboard-list me-2 text-warning"></i> Riwayat Transaksi
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle text-center">
+                    <thead class="table-warning">
+                        <tr>
+                            <th>Nama</th>
+                            <th>No Transaksi</th>
+                            <th>Nama Produk</th>
+                            <th>Jumlah</th>
+                            <th>Total</th>
+                            <th>Tanggal</th>
+                            <th>Metode Pembayaran</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dino</td>
+                            <td>TRX001</td>
+                            <td>UREA</td>
+                            <td>5</td>
+                            <td>Rp 100.000</td>
+                            <td>2025-06-30</td>
+                            <td>Transfer</td>
+                        </tr>
+                        <tr>
+                            <td>Dika</td>
+                            <td>TRX002</td>
+                            <td>RONDAP</td>
+                            <td>10</td>
+                            <td>Rp 200.000</td>
+                            <td>2025-06-30</td>
+                            <td>COD</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Chart.js versi UMD -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Chart: Produk Favorit
+        const produkChart = document.getElementById('produkChart');
+        new Chart(produkChart, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [
+                    {
+                        label: 'This Month',
+                        data: [30, 45, 20, 60, 40, 50, 75],
+                        borderColor: '#f39c12',
+                        backgroundColor: 'rgba(243, 156, 18, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Last Month',
+                        data: [20, 35, 25, 50, 30, 40, 60],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+
+        // Chart: Pendapatan
+        const pendapatanChart = document.getElementById('pendapatanChart');
+        new Chart(pendapatanChart, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [
+                    {
+                        label: 'This Week',
+                        data: [800, 600, 400, 450, 500, 700, 600],
+                        backgroundColor: '#f39c12'
+                    },
+                    {
+                        label: 'Last Week',
+                        data: [700, 500, 300, 400, 450, 600, 500],
+                        backgroundColor: '#e74c3c'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    </script>
+}
