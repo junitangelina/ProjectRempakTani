@@ -1,0 +1,58 @@
+﻿<!-- Views/Inventory/Index.cshtml -->
+@model IEnumerable<ProjectRempakTani.Models.Inventory>
+@{
+    ViewData["Title"] = "Inventory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1 class="mb-4">Data Inventory</h1>
+    </section>
+
+    <section class="content">
+        <div class="card">
+            <div class="card-header">
+                <a href="@Url.Action("Create", "Inventory")" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Tambah Barang
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th style="width:5%">ID</th>
+                            <th>Nama Barang</th>
+                            <th>Kategori</th>
+                            <th>Jumlah</th>
+                            <th>Lokasi</th>
+                            <th style="width:15%">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.NamaBarang</td>
+                                <td>@item.Kategori</td>
+                                <td>@item.Jumlah</td>
+                                <td>@item.Lokasi</td>
+                                <td>
+                                    <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", "Inventory", new { id = item.Id })">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", "Inventory", new { id = item.Id })" onclick="return confirm('Yakin ingin menghapus data ini?');">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- AdminLTE dan FontAwesome harus sudah tersedia di layout untuk tampil maksimal -->
