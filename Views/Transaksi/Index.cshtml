@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ProjectRempakTani.Models.Transaksi>
+
+@{
+    ViewData["Title"] = "Daftar Transaksi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Daftar Transaksi</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">+ Tambah Transaksi</a>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>Tanggal</th>
+            <th>Keterangan</th>
+            <th>Total Item</th>
+            <th>Total Harga</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaksi in Model)
+        {
+            var totalHarga = transaksi.DetailTransaksis.Sum(d => d.HargaSatuan * d.Jumlah);
+            var totalItem = transaksi.DetailTransaksis.Sum(d => d.Jumlah);
+
+            <tr>
+                <td>@transaksi.TanggalTransaksi.ToShortDateString()</td>
+                <td>@transaksi.Keterangan</td>
+                <td>@totalItem</td>
+                <td>Rp @totalHarga.ToString("N0")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@transaksi.Id" class="btn btn-sm btn-warning me-1">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@transaksi.Id" class="btn btn-sm btn-danger">Hapus</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
