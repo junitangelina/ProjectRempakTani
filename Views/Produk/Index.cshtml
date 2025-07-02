@@ -2,10 +2,16 @@
 
 @{
     ViewData["Title"] = "Data Produk";
+    var search = Context.Request.Query["search"].ToString(); // <- tambahkan baris ini
 }
 
 <h2 class="mb-3">Data Produk</h2>
-
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="search" class="form-control" placeholder="Cari produk..." value="@search" />
+        <button type="submit" class="btn btn-outline-secondary">Cari</button>
+    </div>
+</form>
 <a asp-action="Create" class="btn btn-warning mb-3 text-white"><i class="bi bi-plus-circle"></i> Tambah Produk</a>
 
 <table class="table table-bordered table-striped">
@@ -27,9 +33,16 @@
                 <td>@item.Harga.ToString("C")</td>
                 <td>@item.Stok</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Detail</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Hapus</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+
                 </td>
             </tr>
         }

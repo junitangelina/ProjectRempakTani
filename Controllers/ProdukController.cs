@@ -13,10 +13,18 @@ public class ProdukController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(string search)
     {
-        var data = _context.Produks.Include(p => p.Kategori).ToList();
+        var query = _context.Produks.Include(p => p.Kategori).AsQueryable();
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(p => p.NamaProduk.Contains(search));
+        }
+
+        var data = query.ToList();
         return View(data);
+
     }
 
     public IActionResult Create()

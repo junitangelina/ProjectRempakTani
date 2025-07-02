@@ -1,40 +1,57 @@
 ﻿@model IEnumerable<ProjectRempakTani.Models.Kategori>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Data Kategori";
 }
 
-<h1>Index</h1>
+<h2 class="mb-3">Data Kategori</h2>
+
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+
+<a asp-action="Create" class="btn btn-warning mb-3 text-white">
+    <i class="bi bi-plus-circle"></i> Tambah Kategori
+</a>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-warning">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NamaKategori)
-            </th>
-            <th></th>
+            <th>Nama Kategori</th>
+            <th style="width: 180px;">Aksi</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NamaKategori)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="2" class="text-center text-muted">Tidak ada data kategori.</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NamaKategori</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>

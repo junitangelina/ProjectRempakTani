@@ -4,21 +4,21 @@
     ViewData["Title"] = "Buat Transaksi";
 }
 
-<h2>Buat Transaksi</h2>
+<h2 class="mb-4">Buat Transaksi</h2>
 
 <form asp-action="Create" method="post">
     <div class="mb-3">
-        <label asp-for="TanggalTransaksi" class="form-label"></label>
+        <label asp-for="TanggalTransaksi" class="form-label">Tanggal Transaksi</label>
         <input asp-for="TanggalTransaksi" class="form-control" />
     </div>
     <div class="mb-3">
-        <label asp-for="Keterangan" class="form-label"></label>
+        <label asp-for="Keterangan" class="form-label">Keterangan</label>
         <input asp-for="Keterangan" class="form-control" />
     </div>
 
-    <h4>Detail Produk</h4>
+    <h5 class="mt-4">Detail Produk</h5>
     <table class="table table-bordered">
-        <thead>
+        <thead class="table-warning">
             <tr>
                 <th>Produk</th>
                 <th>Harga</th>
@@ -26,28 +26,100 @@
                 <th>Subtotal</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="produk-body">
             @for (int i = 0; i < Model.Items.Count; i++)
             {
                 <tr>
                     <td>
-                        @Model.Items[i].NamaProduk
-                        <input type="hidden" asp-for="Items[@i].ProdukId" />
+                        <select asp-for="Items[@i].ProdukId" class="form-select produk-select" data-index="@i">
+                            <option value="">-- Pilih Produk --</option>
+                            @foreach (var produk in Model.ProdukList)
+                            {
+                                <option value="@produk.Id" data-harga="@produk.Harga" data-nama="@produk.NamaProduk">
+                                    @produk.NamaProduk
+                                </option>
+                            }
+                        </select>
                         <input type="hidden" asp-for="Items[@i].NamaProduk" />
                     </td>
-                    <td>
-                        <input asp-for="Items[@i].HargaSatuan" class="form-control" readonly />
-                    </td>
-                    <td>
-                        <input asp-for="Items[@i].Jumlah" class="form-control" />
-                    </td>
-                    <td>
-                        @(Model.Items[i].HargaSatuan * Model.Items[i].Jumlah)
-                    </td>
+                    <td><input asp-for="Items[@i].HargaSatuan" class="form-control harga" readonly /></td>
+                    <td><input asp-for="Items[@i].Jumlah" class="form-control jumlah" data-index="@i" /></td>
+                    <td><input type="text" class="form-control subtotal" readonly /></td>
                 </tr>
             }
         </tbody>
     </table>
 
+    <button type="button" class="btn btn-sm btn-secondary mb-3" id="tambah-baris">
+        <i class="bi bi-plus-circle"></i> Tambah Baris Produk
+    </button>
+
+    <br />
     <button type="submit" class="btn btn-warning">Simpan Transaksi</button>
 </form>
+
+@section Scripts {
+    <script>
+        let produkList = @Html.Raw(Json.Serialize(Model.ProdukList));
+
+        document.getElementById('tambah-baris').addEventListener('click', function () {
+            let index = document.querySelectorAll('select.produk-select').length;
+            let tbody = document.getElementById('produk-body');
+
+            let row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <select name="Items[${index}].ProdukId" class="form-select produk-select" data-index="${index}">
+                        <option value="">-- Pilih Produk --</option>
+                        ${produkList.map(p => `
+                            <option value="${p.id}" data-harga="${p.harga}" data-nama="${p.namaProduk}">
+                                ${p.namaProduk}
+                            </option>`).join('')}
+                    </select>
+                    <input type="hidden" name="Items[${index}].NamaProduk" />
+                </td>
+                <td><input name="Items[${index}].HargaSatuan" class="form-control harga" readonly /></td>
+                <td><input name="Items[${index}].Jumlah" class="form-control jumlah" data-index="${index}" /></td>
+                <td><input type="text" class="form-control subtotal" readonly /></td>
+            `;
+            tbody.appendChild(row);
+            attachEvents();
+        });
+
+        function attachEvents() {
+            document.querySelectorAll('.produk-select').forEach(select => {
+                select.removeEventListener('change', handleChange);
+                select.addEventListener('change', handleChange);
+            });
+
+            document.querySelectorAll('.jumlah').forEach(input => {
+                input.removeEventListener('input', handleInput);
+                input.addEventListener('input', handleInput);
+            });
+        }
+
+        function handleChange() {
+            const selectedOption = this.options[this.selectedIndex];
+            const index = this.dataset.index;
+            const harga = selectedOption.getAttribute('data-harga') || 0;
+            const nama = selectedOption.getAttribute('data-nama') || '';
+
+            document.querySelector(`[name="Items[${index}].HargaSatuan"]`).value = harga;
+            document.querySelector(`[name="Items[${index}].NamaProduk"]`).value = nama;
+            updateSubtotal(index);
+        }
+
+        function handleInput() {
+            updateSubtotal(this.dataset.index);
+        }
+
+        function updateSubtotal(index) {
+            const harga = parseFloat(document.querySelector(`[name="Items[${index}].HargaSatuan"]`).value) || 0;
+            const jumlah = parseFloat(document.querySelector(`[name="Items[${index}].Jumlah"]`).value) || 0;
+            const subtotal = harga * jumlah;
+            document.querySelectorAll('.subtotal')[index].value = subtotal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+        }
+
+        attachEvents();
+    </script>
+}

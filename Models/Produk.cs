@@ -19,7 +19,7 @@ namespace ProjectRempakTani.Models
         public string? Deskripsi { get; set; }
 
         public int KategoriId { get; set; }
-        [ValidateNever] // ✅ Tambahkan ini agar tidak divalidasi saat POST
+        [ValidateNever] // Tambahkan ini agar tidak divalidasi saat POST
         public Kategori Kategori { get; set; }
 
         public ICollection<DetailTransaksi> DetailTransaksis { get; set; } = new List<DetailTransaksi>();

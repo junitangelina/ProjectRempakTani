@@ -15,18 +15,20 @@ namespace ProjectRempakTani.Controllers
             _context = context;
         }
 
+
+
         // GET: Transaksi/Create
         public IActionResult Create()
         {
             var viewModel = new TransaksiViewModel
             {
-                Items = _context.Produks.Select(p => new TransaksiItemViewModel
-                {
-                    ProdukId = p.Id,
-                    NamaProduk = p.NamaProduk,
-                    HargaSatuan = p.Harga
-                }).ToList()
+                ProdukList = _context.Produks.ToList(),
+                Items = new List<TransaksiItemViewModel>
+    {
+        new TransaksiItemViewModel(),
+    }
             };
+
 
             return View(viewModel);
         }
@@ -71,16 +73,25 @@ namespace ProjectRempakTani.Controllers
         }
 
         // GET: Transaksi/Index
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
-            var data = _context.Transaksis
+            var query = _context.Transaksis
                 .Include(t => t.DetailTransaksis)
                 .ThenInclude(d => d.Produk)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(t => t.Keterangan.Contains(search));
+            }
+
+            var data = query
                 .OrderByDescending(t => t.TanggalTransaksi)
                 .ToList();
 
             return View(data);
         }
+
 
         // GET: Transaksi/Edit/5
         public IActionResult Edit(int? id)
@@ -94,22 +105,20 @@ namespace ProjectRempakTani.Controllers
 
             if (transaksi == null) return NotFound();
 
-            var produkList = _context.Produks.ToList();
-
             var viewModel = new TransaksiViewModel
             {
                 TanggalTransaksi = transaksi.TanggalTransaksi,
                 Keterangan = transaksi.Keterangan,
-                Items = produkList.Select(p => new TransaksiItemViewModel
+                Items = transaksi.DetailTransaksis.Select(dt => new TransaksiItemViewModel
                 {
-                    ProdukId = p.Id,
-                    NamaProduk = p.NamaProduk,
-                    HargaSatuan = p.Harga,
-                    Jumlah = transaksi.DetailTransaksis
-                                .FirstOrDefault(dt => dt.ProdukId == p.Id)?.Jumlah ?? 0
+                    ProdukId = dt.ProdukId,
+                    NamaProduk = dt.Produk.NamaProduk,
+                    HargaSatuan = dt.HargaSatuan,
+                    Jumlah = dt.Jumlah
                 }).ToList()
             };
 
+            ViewBag.AllProduks = _context.Produks.ToList();
             ViewBag.TransaksiId = transaksi.Id;
             return View(viewModel);
         }
@@ -180,7 +189,7 @@ namespace ProjectRempakTani.Controllers
         }
 
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
@@ -190,7 +199,7 @@ namespace ProjectRempakTani.Controllers
 
             if (transaksi != null)
             {
-                // Kembalikan stok produk
+                // Kembalikan stok
                 foreach (var detail in transaksi.DetailTransaksis)
                 {
                     var produk = _context.Produks.Find(detail.ProdukId);
@@ -206,6 +215,20 @@ namespace ProjectRempakTani.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Transaksi/Details/5
+        public IActionResult Details(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var transaksi = _context.Transaksis
+                .Include(t => t.DetailTransaksis)
+                .ThenInclude(d => d.Produk)
+                .FirstOrDefault(t => t.Id == id);
+
+            if (transaksi == null) return NotFound();
+
+            return View(transaksi);
+        }
 
     }
 }

@@ -2,44 +2,19 @@
 
 @{
     ViewData["Title"] = "Hapus Transaksi";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Hapus Transaksi</h2>
 
-<div class="alert alert-warning">
-    <strong>Yakin ingin menghapus transaksi ini?</strong>
+<h4>Yakin ingin menghapus transaksi ini?</h4>
+
+<div class="mb-3">
+    <strong>Tanggal:</strong> @Model.TanggalTransaksi <br />
+    <strong>Keterangan:</strong> @Model.Keterangan
 </div>
 
-<div>
-    <p><strong>Tanggal:</strong> @Model.TanggalTransaksi.ToShortDateString()</p>
-    <p><strong>Keterangan:</strong> @Model.Keterangan</p>
-
-    <h5>Detail Produk</h5>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Produk</th>
-                <th>Jumlah</th>
-                <th>Harga Satuan</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.DetailTransaksis)
-            {
-                <tr>
-                    <td>@item.Produk?.NamaProduk</td>
-                    <td>@item.Jumlah</td>
-                    <td>@item.HargaSatuan</td>
-                    <td>@(item.HargaSatuan * item.Jumlah)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-<form asp-action="DeleteConfirmed" asp-route-id="@Model.Id" method="post">
-    <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Hapus</button>
     <a asp-action="Index" class="btn btn-secondary">Batal</a>
 </form>

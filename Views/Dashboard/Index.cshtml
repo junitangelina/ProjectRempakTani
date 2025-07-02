@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    var labels = ViewBag.Labels as List<string>;
+    var data = ViewBag.Data as List<int>;
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4 fw-bold text-dark">Dashboard</h2>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white fw-semibold">
+            <i class="bi bi-star-fill me-2 text-warning"></i> Produk Favorit
+        </div>
+        <div class="card-body">
+            <canvas id="produkChart" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        const ctx = document.getElementById('produkChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(labels)),
+                datasets: [{
+                    label: 'Jumlah Dibeli',
+                    data: @Html.Raw(Json.Serialize(data)),
+                    backgroundColor: 'rgba(243, 156, 18, 0.6)',
+                    borderColor: '#f39c12',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }
+            }
+        });
+    </script>
+}

@@ -1,4 +1,6 @@
-﻿namespace ProjectRempakTani.ViewModels
+﻿using ProjectRempakTani.Models;
+
+namespace ProjectRempakTani.ViewModels
 {
     public class TransaksiItemViewModel
     {
@@ -14,5 +16,8 @@
         public DateTime TanggalTransaksi { get; set; } = DateTime.Now;
         public string? Keterangan { get; set; }
         public List<TransaksiItemViewModel> Items { get; set; } = new List<TransaksiItemViewModel>();
+        // Tambahan untuk dropdown produk
+        public List<Produk> ProdukList { get; set; } = new();
+
     }
 }

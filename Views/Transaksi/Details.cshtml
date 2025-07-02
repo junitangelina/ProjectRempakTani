@@ -1,0 +1,39 @@
+﻿@model ProjectRempakTani.Models.Transaksi
+
+@{
+    ViewData["Title"] = "Detail Transaksi";
+}
+
+<h2>Detail Transaksi</h2>
+
+<div class="mb-3">
+    <strong>Tanggal:</strong> @Model.TanggalTransaksi.ToString("dd MMMM yyyy HH:mm")
+</div>
+<div class="mb-3">
+    <strong>Keterangan:</strong> @Model.Keterangan
+</div>
+
+<h4>Daftar Produk</h4>
+<table class="table table-bordered">
+    <thead class="table-secondary">
+        <tr>
+            <th>Nama Produk</th>
+            <th>Harga Satuan</th>
+            <th>Jumlah</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DetailTransaksis)
+        {
+            <tr>
+                <td>@item.Produk.NamaProduk</td>
+                <td>@item.HargaSatuan.ToString("N0")</td>
+                <td>@item.Jumlah</td>
+                <td>@((item.HargaSatuan * item.Jumlah).ToString("C0", new System.Globalization.CultureInfo("id-ID")))</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Kembali</a>
